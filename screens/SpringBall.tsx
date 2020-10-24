@@ -72,7 +72,7 @@ function interaction(gestureTranslation: any, gestureState: any) {
     ]);
 }
 
-const BouncingBall = (): any => {
+const SpringBall = (): any => {
 
     const gestureX = new Value(0);
     const gestureY = new Value(0);
@@ -130,4 +130,4 @@ const BouncingBall = (): any => {
     },
   });
 
-export default BouncingBall;
+export default SpringBall;

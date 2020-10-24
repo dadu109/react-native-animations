@@ -16,7 +16,7 @@ const Home = ({ navigation }: Props) => {
     return (
         <View style={styles.container}>
             <Button title="Go to MovingBall" onPress={() => {navigation.navigate('MovingBall')}} />
-            <Button title="Go to BouncingBall" onPress={() => {navigation.navigate('BouncingBall')}} />
+            <Button title="Go to SpringBall" onPress={() => {navigation.navigate('SpringBall')}} />
         </View>
     );
 }

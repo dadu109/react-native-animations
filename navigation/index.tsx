@@ -3,12 +3,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from '../screens/Home'
 import MovingBall from '../screens/MovingBall'
-import BouncingBall from '../screens/BouncingBall'
+import SpringBall from '../screens/SpringBall'
 
 export type RootStackParamList = {
     Home: undefined;
     MovingBall: undefined;
-    BouncingBall: undefined;
+    SpringBall: undefined;
 };
 
 const {Navigator, Screen} = createStackNavigator<RootStackParamList>();
@@ -19,7 +19,7 @@ const Navigation = () => {
             <Navigator>
                 <Screen name="Home" component={Home} />
                 <Screen name="MovingBall" component={MovingBall} />
-                <Screen name="BouncingBall" component={BouncingBall} />
+                <Screen name="SpringBall" component={SpringBall} />
             </Navigator>
         </NavigationContainer>
     )
