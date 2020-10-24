@@ -2,12 +2,12 @@ import * as React from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
-import Svg, {Line, Circle} from 'react-native-svg'
+import Svg, {Line} from 'react-native-svg';
 
 const AnimatedLine = Animated.createAnimatedComponent(Line);
 
 const {width, height} = Dimensions.get('window')
-const { cond, eq, add, set, Value, event, Clock, diff, divide, and, lessThan,stopClock, abs, startClock, multiply, greaterThan, sub, block, interpolate, Extrapolate } = Animated;
+const { cond, eq, add, set, Value, event, Clock, diff, divide, lessThan,stopClock, abs, startClock, multiply, greaterThan, sub, block, interpolate, Extrapolate } = Animated;
 const EPS = 1e-3;
 const EMPTY_FRAMES_THRESHOLDS = 5;
 
@@ -17,7 +17,7 @@ function spring(dt: any, position: any, velocity: any, anchor: any, mass = 1, te
     return set(velocity, add(velocity, multiply(dt, acc)));
 }
 
-function stopWhenNeeded(dt: any, position: any, velocity: any, clock: any) {
+function stopWhenNeeded(position: any, clock: any) {
     const ds = diff(position);
     const noMovementFrames = new Value(0);
   
@@ -54,8 +54,6 @@ function interaction(gestureTranslation: any, gestureState: any) {
         [
         cond(dragging, 0, [set(dragging, 1), set(start, position)]),
         set(anchor, add(start, gestureTranslation)),
-
-        // spring attached to pan gesture "anchor"
         spring(dt, position, velocity, anchor),
         damping(dt, velocity),
         ],
@@ -70,13 +68,15 @@ function interaction(gestureTranslation: any, gestureState: any) {
     return block([
         step,
         set(position, add(position, multiply(velocity, dt))),
-        stopWhenNeeded(dt, position, velocity, clock),
+        stopWhenNeeded(position, clock),
         position,
     ]);
 }
 
 const SpringBall = (): any => {
-
+    
+    //88 is the height of the react navigation header, for some reacon the code does not work when im using the built in useHeaderHeight hook
+    const areaHeight = height - 88;
     const gestureX = new Value(0);
     const gestureY = new Value(0);
     const state = new Value(-1);
@@ -84,7 +84,7 @@ const SpringBall = (): any => {
     const transY = interaction(gestureY, state);
 
     const lineX = interpolate(transX, {inputRange: [-width/2,width/2], outputRange: [0, width], extrapolate: Extrapolate.CLAMP})
-    const lineY = interpolate(transY, {inputRange: [-height/2,height/2], outputRange: [0, height-CIRCLE_SIZE / 2], extrapolate: Extrapolate.CLAMP})
+    const lineY = interpolate(transY, {inputRange: [-areaHeight/2,areaHeight/2], outputRange: [0, areaHeight + CIRCLE_SIZE/2], extrapolate: Extrapolate.CLAMP})
 
     const onGestureEvent = event([
         {
