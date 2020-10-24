@@ -2,9 +2,12 @@ import * as React from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
+import Svg, {Line, Circle} from 'react-native-svg'
+
+const AnimatedLine = Animated.createAnimatedComponent(Line);
 
 const {width, height} = Dimensions.get('window')
-const { cond, eq, add, set, Value, event, Clock, diff, divide, and, lessThan,stopClock, abs, startClock, multiply, greaterThan, sub, block } = Animated;
+const { cond, eq, add, set, Value, event, Clock, diff, divide, and, lessThan,stopClock, abs, startClock, multiply, greaterThan, sub, block, interpolate, Extrapolate } = Animated;
 const EPS = 1e-3;
 const EMPTY_FRAMES_THRESHOLDS = 5;
 
@@ -80,6 +83,9 @@ const SpringBall = (): any => {
     const transX = interaction(gestureX, state);
     const transY = interaction(gestureY, state);
 
+    const lineX = interpolate(transX, {inputRange: [-width/2,width/2], outputRange: [0, width], extrapolate: Extrapolate.CLAMP})
+    const lineY = interpolate(transY, {inputRange: [-height/2,height/2], outputRange: [0, height-CIRCLE_SIZE / 2], extrapolate: Extrapolate.CLAMP})
+
     const onGestureEvent = event([
         {
           nativeEvent: {
@@ -109,6 +115,16 @@ const SpringBall = (): any => {
             ]}
         />
         </PanGestureHandler>
+        <Svg style={styles.lineBox}>
+          <AnimatedLine
+            x1={width/2}
+            y1={height/2}
+            x2={lineX}
+            y2={lineY}
+            stroke="lightgrey"
+            strokeWidth="1.5"
+          />
+        </Svg>
     </View>
     );
     
@@ -120,14 +136,24 @@ const SpringBall = (): any => {
     container: {
       flex: 1,
       justifyContent:'center',
-      alignItems:'center'
+      alignItems:'center',
+      height
     },
     box: {
       backgroundColor: "lightgreen",
       width: CIRCLE_SIZE,
       height: CIRCLE_SIZE,
       borderRadius: CIRCLE_SIZE / 2,
+      zIndex:3
     },
+    lineBox: {
+      width,
+      height,
+      position:'absolute',
+      top:0,
+      left:0,
+      zIndex:2
+    }
   });
 
 export default SpringBall;
